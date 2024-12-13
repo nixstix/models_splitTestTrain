@@ -1,0 +1,349 @@
+---
+title: "MOFA factors"
+
+date: "Last update: `r format(Sys.time(), '%d %B, %Y')`" 
+output:
+  BiocStyle::html_document:
+    toc: true
+    toc_float:
+        collapsed: true
+        smooth_scroll: true
+    toc_depth: 3
+    fig_caption: yes
+    code_folding: show
+    number_sections: false
+
+
+---
+
+## load data, libraries, functions
+
+```{r}
+library(tidyverse)
+library(MOFA2)
+library(ggplot2)
+library(MOFAdata)
+
+
+```
+
+
+## Factor 14
+
+```{r}
+MOFAobject = load_model('../data/MOFA_models/MOFA2_noScale_train2020_21.hdf5')
+MOFAobject
+
+plot_variance_explained(MOFAobject, x="view", y="factor")
+
+plot_factor(MOFAobject, 
+            factor = 14,
+            color_by = "Freq.Monocytes"
+)
+
+plot_weights(MOFAobject,
+             #view = "geneExp",
+             factor = 14,
+             nfeatures = 20,     # Number of features to highlight
+             scale = T,          # Scale weights from -1 to 1
+             abs = F             # Take the absolute value?
+)
+
+plot_weights(MOFAobject,
+             view = "geneExp",
+             factor = 14,
+             nfeatures = 10,     # Number of features to highlight
+             scale = T,          # Scale weights from -1 to 1
+             abs = F             # Take the absolute value?
+)
+
+plot_weights(MOFAobject,
+             view = "cell_freq",
+             factor = 14,
+             nfeatures = 10,     # Number of features to highlight
+             scale = T,          # Scale weights from -1 to 1
+             abs = F             # Take the absolute value?
+)
+
+plot_weights(MOFAobject,
+             view = "ab",
+             factor = 14,
+             nfeatures = 10,     # Number of features to highlight
+             scale = T,          # Scale weights from -1 to 1
+             abs = F             # Take the absolute value?
+)
+
+plot_weights(MOFAobject,
+             view = "cytokineL",
+             factor = 14,
+             nfeatures = 10,     # Number of features to highlight
+             scale = T,          # Scale weights from -1 to 1
+             abs = F             # Take the absolute value?
+)
+
+
+plot_top_weights(MOFAobject,
+                 #view = "geneExp",
+                 factor = 14,
+                 nfeatures = 40
+)
+
+plot_top_weights(MOFAobject,
+                 view = "cell_freq",
+                 factor = 14,
+                 nfeatures = 40
+)
+
+
+plot_data_heatmap(MOFAobject,
+                  view = "geneExp",         # view of interest
+                  factor = 14,             # factor of interest
+                  features = 70,          # number of features to plot (they are selected by weight)
+                  
+                  # extra arguments that are passed to the `pheatmap` function
+                  cluster_rows = TRUE, cluster_cols = FALSE,
+                  show_rownames = TRUE, show_colnames = FALSE
+)
+
+
+plot_data_scatter(MOFAobject,
+                  view = "geneExp",         # view of interest
+                  factor = 14,             # factor of interest
+                  features = 9,           # number of features to plot (they are selected by weight)
+                  add_lm = TRUE,         # add linear regression
+                  color_by = "Meta.infancy_vac"
+)
+
+plot_data_scatter(MOFAobject,
+                  view = "cytokineL",         # view of interest
+                  factor = 14,             # factor of interest
+                  features = 9,           # number of features to plot (they are selected by weight)
+                  add_lm = TRUE,         # add linear regression
+                  color_by = "Meta.infancy_vac"
+)
+
+```
+
+```{r}
+factors <- get_factors(MOFAobject, factors = "all")
+lapply(factors,dim)
+
+weights <- get_weights(MOFAobject, views = "all", factors = "Factor14", scale = F)
+a= weights$geneExp
+ggplot(a, aes(x=Factor14)) +
+    geom_density() 
+
+a['Expr.ENSG00000277632.1', ]
+
+```
+
+```{r}
+a = a[order(a[,1]), ]
+head(a)
+tail(a)
+
+tail(names(a), n=200)
+
+```
+
+```{r}
+b= weights$ab
+ggplot(b, aes(x=Factor14)) +
+    geom_density() 
+
+
+c= weights$cytokineL
+ggplot(c, aes(x=Factor14)) +
+    geom_density() 
+
+
+d= weights$cell_freq
+ggplot(d, aes(x=Factor14)) +
+    geom_density() 
+d['Freq.Monocytes', ]
+
+
+```
+
+
+### against Hallmark
+
+```{r}
+
+MOFAobject3 = MOFAobject
+ens_map = read_csv('../../../../../data/ensembl_idmapping_grch38.csv')
+head(ens_map)
+
+genes = as.character(rownames(MOFAobject3@data$geneExp$group1))
+genes = gsub('Expr.', '', genes)
+table(genes %in% ens_map$ensembl_gene_id)
+ens_map = ens_map[!duplicated(ens_map$ensembl_gene_id), ]
+rownames(ens_map) = ens_map$ensembl_gene_id
+genes_sym = ens_map[genes, 'gene_name']$gene_name
+
+rownames(MOFAobject3@data$geneExp$group1) = genes_sym
+names(MOFAobject3@intercepts$geneExp$group1) = genes_sym
+
+MOFAobject3@features_metadata$feature[1:6650] = genes_sym
+
+rownames(MOFAobject3@expectations$W$geneExp) = genes_sym
+
+```
+
+```{r}
+hallmark = fgsea::gmtPathways('~/Documents/References/Genesets/MSigDB/h.all.v2023.2.Hs.symbols.gmt.txt')
+
+
+# Get all unique genes
+all_genes <- sort(unique(unlist(hallmark)))
+
+# Create the binary matrix
+binary_matrix <- sapply(all_genes, function(g) {
+    as.numeric(sapply(hallmark, function(x) g %in% x))
+})
+
+# Transpose and convert to a data frame for better visualization
+#binary_matrix <- as.data.frame(t(binary_matrix))
+binary_matrix[1:5, 1:5]
+
+
+# Add row names
+rownames(binary_matrix) <- names(hallmark)
+
+# Display the binary matrix
+binary_matrix[1:5, 1:10]
+dim(binary_matrix)
+
+```
+
+
+
+### against BTM
+
+```{r}
+
+btm = fgsea::gmtPathways('~/Documents/References/Genesets/BTM/BTM_for_GSEA_20131008.gmt')
+lapply(btm, length)
+
+# Get all unique genes
+all_genes <- sort(unique(unlist(btm)))
+
+# Create the binary matrix
+binary_matrix_btm <- sapply(all_genes, function(g) {
+    as.numeric(sapply(btm, function(x) g %in% x))
+})
+
+# Transpose and convert to a data frame for better visualization
+#binary_matrix_btm <- as.data.frame(t(binary_matrix_btm))
+binary_matrix_btm[1:5, 1:5]
+
+
+# Add row names
+rownames(binary_matrix_btm) <- names(btm)
+
+# Display the binary matrix
+binary_matrix_btm[1:5, 1:10]
+dim(binary_matrix)
+
+```
+
+### other
+
+```{r}
+
+library(fgsea)
+
+rnk = MOFAobject3@expectations$W$geneExp[,'Factor14']
+
+gsea_res = fgsea(pathways = btm, stats = rnk)
+gsea_res = gsea_res[order(gsea_res$padj), ]
+head(gsea_res, n=20)
+
+```
+
+```{r}
+plot_top_weights(MOFAobject3, scale = T, abs = F,
+                 view = "geneExp",
+                 factor = 14,
+                 nfeatures = 30
+)
+```
+
+```{r}
+weights <- get_weights(MOFAobject3, views = "all", factors = "Factor14", scale = F)
+weights.scale  <- get_weights(MOFAobject3, views = "geneExp", factors = "Factor14", scale = T)
+
+a= weights$geneExp
+ggplot(a, aes(x=Factor14)) +
+    geom_density() 
+
+a['CCL3', ]
+
+weights.scale$geneExp[c('CCL3', 'CXCL8', 'IL1B', 'CCL4'), ]
+```
+
+```{r}
+a = a[order(a[,1]), ]
+head(a)
+tail(a)
+
+#d = as.data.frame(tail(names(a), n=200))
+#write_tsv(d, file='data/CCL3_MOFA_F3.tsv', col_names = T)
+#d
+```
+
+### cytokines
+
+```{r}
+
+plot_top_weights(MOFAobject3,
+                 view = "cytokineL",
+                 factor = 14,
+                 nfeatures = 10
+)
+
+```
+
+```{r}
+
+plot_top_weights(MOFAobject3,
+                 view = "ab",
+                 factor = 14,
+                 nfeatures = 5
+)
+
+```
+
+```{r}
+
+plot_top_weights(MOFAobject3,
+                 view = "cell_freq",
+                 factor = 14,
+                 nfeatures = 5
+)
+
+```
+
+```{r}
+weights <- get_weights(MOFAobject3, views = "cell_freq", scale = F)
+plot(weights$cell_freq['Freq.Monocytes', ])
+```
+
+
+```{r}
+weights <- get_weights(MOFAobject3, views = "cytokineL", scale = F)
+plot(weights$cytokineL['CytokineL.P10145', ])
+plot(weights$cytokineL['CytokineL.P01375', ])
+
+plot(weights$cytokineL['CytokineL.P22301', ])
+
+```
+
+## end
+
+```{r}
+Sys.Date()
+getwd()
+
+sessionInfo()
+```
