@@ -2260,14 +2260,13 @@ mefisto_opts = get_default_mefisto_options(MOFAobject)</code></pre>
 <pre class="r"><code>rm(d, data_opts, mefisto_opts, model_opts, stochastic_opts, train_data, train_opts)
 gc()</code></pre>
 <pre><code>##            used  (Mb) gc trigger  (Mb) max used  (Mb)
-## Ncells  7484370 399.8   12238680 653.7  9952856 531.6
-## Vcells 19556063 149.3   36294946 277.0 34323039 261.9</code></pre>
+## Ncells  7484367 399.8   12106858 646.6  9952925 531.6
+## Vcells 19556026 149.3   36294866 277.0 34323006 261.9</code></pre>
 <pre class="r"><code>#reticulate::use_python(&#39;/opt/miniconda3/bin/python&#39;, required = TRUE)
 #reticulate::use_condaenv(condaenv = &#39;/Users/nthrupp/Library/Caches/org.R-project.R/R/basilisk/1.14.3/MOFA2/1.12.1/mofa_env&#39;, required = TRUE)
 
 # run MOFA
 MOFAobject &lt;- run_mofa(MOFAobject, outfile=&quot;../data/MOFA_models/MOFA2_noScale_train2020_21.hdf5&quot;, use_basilisk = F)</code></pre>
-<pre><code>## Warning: Output file ../data/MOFA_models/MOFA2_noScale_train2020_21.hdf5 already exists, it will be replaced</code></pre>
 <pre><code>## Connecting to the mofapy2 python package using reticulate (use_basilisk = FALSE)... 
 ##     Please make sure to manually specify the right python binary when loading R with reticulate::use_python(..., force=TRUE) or the right conda environment with reticulate::use_condaenv(..., force=TRUE)
 ##     If you prefer to let us automatically install a conda environment with &#39;mofapy2&#39; installed using the &#39;basilisk&#39; package, please use the argument &#39;use_basilisk = TRUE&#39;</code></pre>
@@ -2322,72 +2321,72 @@ MOFAobject &lt;- run_mofa(MOFAobject, outfile=&quot;../data/MOFA_models/MOFA2_no
 ## 
 ## ELBO before training: -22283179.93 
 ## 
-## Iteration 1: time=0.57, ELBO=-2361963.15, deltaELBO=19921216.772 (89.40024196%), Factors=15
-## Iteration 2: time=0.55, Factors=15
-## Iteration 3: time=0.55, Factors=15
-## Iteration 4: time=0.56, Factors=15
-## Iteration 5: time=0.55, Factors=15
-## Iteration 6: time=0.57, ELBO=-1350473.39, deltaELBO=1011489.767 (4.53925234%), Factors=15
-## Iteration 7: time=0.55, Factors=15
-## Iteration 8: time=0.56, Factors=15
-## Iteration 9: time=0.57, Factors=15
-## Iteration 10: time=0.62, Factors=15
-## Iteration 11: time=0.58, ELBO=-1345651.97, deltaELBO=4821.416 (0.02163702%), Factors=15
-## Iteration 12: time=0.56, Factors=15
-## Iteration 13: time=0.56, Factors=15
-## Iteration 14: time=0.56, Factors=15
-## Iteration 15: time=0.55, Factors=15
+## Iteration 1: time=0.52, ELBO=-2361963.15, deltaELBO=19921216.772 (89.40024196%), Factors=15
+## Iteration 2: time=0.50, Factors=15
+## Iteration 3: time=0.49, Factors=15
+## Iteration 4: time=0.55, Factors=15
+## Iteration 5: time=0.54, Factors=15
+## Iteration 6: time=0.53, ELBO=-1350473.39, deltaELBO=1011489.767 (4.53925234%), Factors=15
+## Iteration 7: time=0.50, Factors=15
+## Iteration 8: time=0.50, Factors=15
+## Iteration 9: time=0.49, Factors=15
+## Iteration 10: time=0.50, Factors=15
+## Iteration 11: time=0.52, ELBO=-1345651.97, deltaELBO=4821.416 (0.02163702%), Factors=15
+## Iteration 12: time=0.50, Factors=15
+## Iteration 13: time=0.50, Factors=15
+## Iteration 14: time=0.51, Factors=15
+## Iteration 15: time=0.51, Factors=15
 ## Iteration 16: time=0.57, ELBO=-1343492.19, deltaELBO=2159.786 (0.00969245%), Factors=15
 ## Iteration 17: time=0.55, Factors=15
-## Iteration 18: time=0.55, Factors=15
-## Iteration 19: time=0.55, Factors=15
-## Iteration 20: time=0.55, Factors=15
-## Iteration 21: time=0.56, ELBO=-1340186.94, deltaELBO=3305.246 (0.01483292%), Factors=15
-## Iteration 22: time=0.55, Factors=15
-## Iteration 23: time=0.55, Factors=15
-## Iteration 24: time=0.55, Factors=15
-## Iteration 25: time=0.54, Factors=15
-## Iteration 26: time=0.55, ELBO=-1337242.76, deltaELBO=2944.176 (0.01321255%), Factors=15
-## Iteration 27: time=0.55, Factors=15
-## Iteration 28: time=0.55, Factors=15
-## Iteration 29: time=0.54, Factors=15
-## Iteration 30: time=0.54, Factors=15
-## Iteration 31: time=0.56, ELBO=-1336265.11, deltaELBO=977.656 (0.00438742%), Factors=15
-## Iteration 32: time=0.54, Factors=15
-## Iteration 33: time=0.54, Factors=15
-## Iteration 34: time=0.55, Factors=15
-## Iteration 35: time=0.55, Factors=15
-## Iteration 36: time=0.57, ELBO=-1335965.25, deltaELBO=299.858 (0.00134567%), Factors=15
-## Iteration 37: time=0.58, Factors=15
-## Iteration 38: time=0.56, Factors=15
-## Iteration 39: time=0.56, Factors=15
-## Iteration 40: time=0.57, Factors=15
-## Iteration 41: time=0.57, ELBO=-1335797.64, deltaELBO=167.611 (0.00075218%), Factors=15
-## Iteration 42: time=0.56, Factors=15
-## Iteration 43: time=0.56, Factors=15
-## Iteration 44: time=0.55, Factors=15
-## Iteration 45: time=0.56, Factors=15
-## Iteration 46: time=0.57, ELBO=-1335660.99, deltaELBO=136.645 (0.00061322%), Factors=15
-## Iteration 47: time=0.55, Factors=15
-## Iteration 48: time=0.55, Factors=15
-## Iteration 49: time=0.55, Factors=15
-## Iteration 50: time=0.55, Factors=15
-## Iteration 51: time=0.57, ELBO=-1335536.45, deltaELBO=124.544 (0.00055892%), Factors=15
-## Iteration 52: time=0.55, Factors=15
-## Iteration 53: time=0.54, Factors=15
-## Iteration 54: time=0.66, Factors=15
-## Iteration 55: time=0.59, Factors=15
-## Iteration 56: time=0.57, ELBO=-1335419.56, deltaELBO=116.886 (0.00052455%), Factors=15
-## Iteration 57: time=0.57, Factors=15
-## Iteration 58: time=0.57, Factors=15
-## Iteration 59: time=0.56, Factors=15
+## Iteration 18: time=0.50, Factors=15
+## Iteration 19: time=0.51, Factors=15
+## Iteration 20: time=0.50, Factors=15
+## Iteration 21: time=0.51, ELBO=-1340186.94, deltaELBO=3305.246 (0.01483292%), Factors=15
+## Iteration 22: time=0.50, Factors=15
+## Iteration 23: time=0.53, Factors=15
+## Iteration 24: time=0.53, Factors=15
+## Iteration 25: time=0.52, Factors=15
+## Iteration 26: time=0.52, ELBO=-1337242.76, deltaELBO=2944.176 (0.01321255%), Factors=15
+## Iteration 27: time=0.50, Factors=15
+## Iteration 28: time=0.50, Factors=15
+## Iteration 29: time=0.50, Factors=15
+## Iteration 30: time=0.50, Factors=15
+## Iteration 31: time=0.52, ELBO=-1336265.11, deltaELBO=977.656 (0.00438742%), Factors=15
+## Iteration 32: time=0.50, Factors=15
+## Iteration 33: time=0.51, Factors=15
+## Iteration 34: time=0.51, Factors=15
+## Iteration 35: time=0.52, Factors=15
+## Iteration 36: time=0.52, ELBO=-1335965.25, deltaELBO=299.858 (0.00134567%), Factors=15
+## Iteration 37: time=0.51, Factors=15
+## Iteration 38: time=0.52, Factors=15
+## Iteration 39: time=0.54, Factors=15
+## Iteration 40: time=0.54, Factors=15
+## Iteration 41: time=0.55, ELBO=-1335797.64, deltaELBO=167.611 (0.00075218%), Factors=15
+## Iteration 42: time=0.54, Factors=15
+## Iteration 43: time=0.55, Factors=15
+## Iteration 44: time=0.54, Factors=15
+## Iteration 45: time=0.52, Factors=15
+## Iteration 46: time=0.55, ELBO=-1335660.99, deltaELBO=136.645 (0.00061322%), Factors=15
+## Iteration 47: time=0.53, Factors=15
+## Iteration 48: time=0.54, Factors=15
+## Iteration 49: time=0.54, Factors=15
+## Iteration 50: time=0.53, Factors=15
+## Iteration 51: time=0.54, ELBO=-1335536.45, deltaELBO=124.544 (0.00055892%), Factors=15
+## Iteration 52: time=0.52, Factors=15
+## Iteration 53: time=0.53, Factors=15
+## Iteration 54: time=0.53, Factors=15
+## Iteration 55: time=0.53, Factors=15
+## Iteration 56: time=0.56, ELBO=-1335419.56, deltaELBO=116.886 (0.00052455%), Factors=15
+## Iteration 57: time=0.55, Factors=15
+## Iteration 58: time=0.52, Factors=15
+## Iteration 59: time=0.55, Factors=15
 ## Iteration 60: time=0.55, Factors=15
-## Iteration 61: time=0.57, ELBO=-1335309.27, deltaELBO=110.294 (0.00049497%), Factors=15
-## Iteration 62: time=0.55, Factors=15
-## Iteration 63: time=0.55, Factors=15
-## Iteration 64: time=0.57, Factors=15
-## Iteration 65: time=0.60, Factors=15
-## Iteration 66: time=0.58, ELBO=-1335203.21, deltaELBO=106.055 (0.00047594%), Factors=15
+## Iteration 61: time=0.54, ELBO=-1335309.27, deltaELBO=110.294 (0.00049497%), Factors=15
+## Iteration 62: time=0.52, Factors=15
+## Iteration 63: time=0.53, Factors=15
+## Iteration 64: time=0.53, Factors=15
+## Iteration 65: time=0.53, Factors=15
+## Iteration 66: time=0.53, ELBO=-1335203.21, deltaELBO=106.055 (0.00047594%), Factors=15
 ## 
 ## Converged!
 ## 
@@ -2398,7 +2397,6 @@ MOFAobject &lt;- run_mofa(MOFAobject, outfile=&quot;../data/MOFA_models/MOFA2_no
 ## #######################
 ## 
 ## 
-## Warning: Output file ../data/MOFA_models/MOFA2_noScale_train2020_21.hdf5 already exists, it will be replaced
 ## Saving model in ../data/MOFA_models/MOFA2_noScale_train2020_21.hdf5...</code></pre>
 <pre class="r"><code>MOFAobject</code></pre>
 <pre><code>## Trained MOFA with the following characteristics: 
@@ -2423,9 +2421,9 @@ MOFAobject &lt;- run_mofa(MOFAobject, outfile=&quot;../data/MOFA_models/MOFA2_no
 <div id="session_info" class="section level2">
 <h2>session_info()</h2>
 <pre class="r"><code>Sys.Date()</code></pre>
-<pre><code>## [1] &quot;2024-11-21&quot;</code></pre>
+<pre><code>## [1] &quot;2024-12-16&quot;</code></pre>
 <pre class="r"><code>getwd()</code></pre>
-<pre><code>## [1] &quot;/mnt/bioadhoc/Groups/Peters/nthrupp/CMI-PB3/sampleTestTrain/MOFA_4assays_split2/MOFA&quot;</code></pre>
+<pre><code>## [1] &quot;/mnt/bioadhoc/Groups/Peters/nthrupp/CMI-PB3/FINAL-test/submissions/models_splitTestTrain/MOFA_4assays_split2/MOFA&quot;</code></pre>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>## R version 4.3.3 (2024-02-29)
 ## Platform: x86_64-pc-linux-gnu (64-bit)

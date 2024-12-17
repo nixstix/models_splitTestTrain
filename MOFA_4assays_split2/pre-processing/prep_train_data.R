@@ -12,10 +12,10 @@ ds=c('2020_dataset', '2021_dataset', '2022_dataset', '2023_dataset')
 source('../scripts/libs.R')
 library(lubridate)
 
-dat = readRDS('../../../data/processed_datasets/master_allData_batchCorrected.RDS')
+dat = readRDS('../../../../data/processed_datasets/master_allData_batchCorrected.RDS')
 names(dat)
 
-d2 = readRDS('../../../data/processed_datasets/master_harmonized_data.RDS')
+d2 = readRDS('../../../../data/processed_datasets/master_harmonized_data.RDS')
 
 
 dob = c(d2$training$subject_specimen$year_of_birth,
@@ -86,7 +86,7 @@ meta = left_join(meta, rownames_to_column(x), by=c(  "Meta.specimen_id" = "rowna
 
 # t cell polarisation
 ## for now, let's take data from the already-processed data of Pramod
-tcellpol = read_tsv('../../../data/processed_datasets/Th1(IFN-γ)_Th2(IL-5)_polarization_ratio.tsv')
+tcellpol = read_tsv('../../../../data/processed_datasets/Th1(IFN-γ)_Th2(IL-5)_polarization_ratio.tsv')
 tcellpol$specimen_id = as.character(tcellpol$specimen_id)
 head(tcellpol)
 

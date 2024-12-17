@@ -19,7 +19,6 @@ date: "2024-01-05"
 
 
 ```{r, setup, include=FALSE}
-knitr::opts_knit$set(root.dir = '/mnt/BioAdHoc/Groups/Peters/nthrupp/CMI-PB3/sampleTestTrain/MOFA_4assays_split2/MOFA/')
 nr_factors = 15
 reticulate::use_condaenv('~/software/myenv')
 
