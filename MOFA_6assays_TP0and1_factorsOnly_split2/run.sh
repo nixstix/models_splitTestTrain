@@ -1,6 +1,7 @@
 #!/bin/bash
 
-cd /mnt/BioAdHoc/Groups/Peters/nthrupp/CMI-PB3/sampleTestTrain/MOFA_6assays_TP0and1_factorsOnly_split2
+
+cd /mnt/bioadhoc/Groups/Peters/nthrupp/CMI-PB3/FINAL-test/submissions/models_splitTestTrain/MOFA_6assays_TP0and1_factorsOnly_split2
 pwd
 
 set -e
@@ -11,6 +12,8 @@ echo 'Creating data directories'
 mkdir -p data/MOFA_models
 mkdir -p data/split1
 mkdir -p data/regression_models
+mkdir -p data/predictions
+
 
 echo 'Pre-processing'
 cd pre-processing
@@ -34,13 +37,14 @@ echo 'Regression models'
 cd regression_models
 
 Rscript predict_CCL3.R &> predict_CCL3.out
-Rscript predict_IgG_PT.R &> predict_IgG_PT.out 
-Rscript predict_Mn.R &> predict_Mn.out 
-Rscript predict_TcellPol.R &> predict_TcellPol.out 
- 
 
-Rscript predict_IgG_PT_1.R &> predict_IgG_PT_1.out 
-Rscript predict_IgG_PT_2.R &> predict_IgG_PT_2.out 
+cd ../
+
+echo 'Predictions'
+cd predict_2023
+
+Rscript prep_challengeData.R &> Rscript prep_challengeData.out
+Rscript CCL3_imputeMedian.R &> CCL3_imputeMedian.out
 
 cd ../
 

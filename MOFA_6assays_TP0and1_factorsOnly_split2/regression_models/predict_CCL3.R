@@ -74,16 +74,6 @@ if(is.null(models)){
   cors = unlist(cors)
   max(abs(cors))
   
-  models_alpha = lapply(1:length(models), function(i){
-    if (abs(models[[i]]$model_cor$estimate) == max(abs(cors))){
-      p.int = names(models[[i]]$model_coef)
-      p.int = p.int[!p.int %in% c('(Intercept)')]
-      model = lapply(c(0.0, 0.25, 0.5, 0.75, 1.0), function(x){
-        run_glmnet(p = p.int, task.name = task, alpha=x)      
-      })
-    }  
-  })
-  
 }
 
 save(model1, model2, model3, models, file='../data/regression_models/regression_models_CCL3.RData')
