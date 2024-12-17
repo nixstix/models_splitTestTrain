@@ -7,11 +7,11 @@ source('../scripts/generic_prediction_functions.R')
 dir.create('../data/predictions')
 
 # load 2020 data
-load('../data/split1/2023_CHALLENGE.RData')
+load('../data/split1/CHALLENGE.RData')
 rownames(challenge_data$meta) = challenge_data$meta$Meta.specimen_id
 
 # load MOFA object:
-MOFAobject = load_model('../data/MOFA_models/MOFA2_noScale_train2020_21.hdf5')
+MOFAobject = load_model('../data/MOFA_models/MOFA.hdf5')
 MOFAobject
 
 assays = c( "ab" , "geneExp" ,"cytokineL", "cell_freq" ,"tcellPol" ,"tcellAct")

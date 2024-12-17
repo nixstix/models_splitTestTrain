@@ -2,22 +2,25 @@
 # -------------------------------------------------
 
 # This data has already been normalised by the CMI-PB team. 
-# 
-# We will take a quick look to see what the data looks like.
+# We will renormalise the gene expression data using vst 
 
 ## LOAD DATA
-
-ds=c('2020_dataset', '2021_dataset', '2022_dataset', '2023_dataset')
+## ---------
 
 source('../scripts/libs.R')
-library(lubridate)
 
-dat = readRDS('../../../../data/processed_datasets/master_allData_batchCorrected.RDS')
+
+# load data provided by CMI-PB3
+dat = readRDS('../../../../../data//processed_datasets/master_allData_batchCorrected.RDS')
 names(dat)
 
+# processed data doesn't contain DOB info, let's get this from some other CMI-PB3 data
 d2 = readRDS('../../../../data/processed_datasets/master_harmonized_data.RDS')
 
+## ADD AGE DATA TO METADATA
+## ------------------------
 
+# get DOB and convert to age (for both challenge and training data)
 dob = c(d2$training$subject_specimen$year_of_birth,
   d2$challenge$subject_specimen$year_of_birth)
 boost_date = c(d2$training$subject_specimen$date_of_boost, 
@@ -25,6 +28,7 @@ boost_date = c(d2$training$subject_specimen$date_of_boost,
 age = as.numeric(difftime(boost_date,  dob, units = 'weeks')/52)
 age
 
+# add age to meta data 
 id = c(d2$training$subject_specimen$specimen_id, d2$challenge$subject_specimen$specimen_id)
 
 setdiff(dat$subject_specimen$specimen_id, id)
@@ -35,19 +39,27 @@ head(df)
 
 dat$subject_specimen = left_join(dat$subject_specimen, df)
 
-## SELECT DS FROM 2020, 2021 AS TRAINING SET, AND 2022 AS TEST SET
+## SELECT DATASETS TO USE
+## ----------------------
+
+# in this case we will use all datasets together, and separate them later
+ds=c('2020_dataset', '2021_dataset', '2022_dataset', '2023_dataset')
 dat$subject_specimen = dat$subject_specimen[dat$subject_specimen$dataset %in% ds, ]
 table(dat$subject_specimen$dataset)
 dim(dat$subject_specimen)
 
-##### dat$subject_specimen$specimen_id = as.character(dat$subject_specimen$specimen_id)
-
+# we are having issues with R not knowing whether to treat sample IDs as numbers or characters
+# let's convert to characters to be sure
 dat$subject_specimen$specimen_id = paste('x', dat$subject_specimen$specimen_id, sep='')
 dat$subject_specimen$subject_id = paste('x', dat$subject_specimen$subject_id, sep='')
 head(dat$subject_specimen)
 
-# MERGE DATA
-## merge all matrices to replace empty values with NAs
+## MERGE DATA
+## -----------
+
+
+# MOFA requires the same number of samples for all assays it analyses 
+# merge all matrices to replace empty values with NAs
 
 meta = dat$subject_specimen
 colnames(meta) = paste("Meta.", colnames(meta), sep='')
@@ -82,10 +94,8 @@ head(x)
 rownames(x) = paste('x', rownames(x), sep='')
 meta = left_join(meta, rownames_to_column(x), by=c(  "Meta.specimen_id" = "rowname"))
 
-
-
 # t cell polarisation
-## for now, let's take data from the already-processed data of Pramod
+# take pre-processed data provided by CMI-PB team
 tcellpol = read_tsv('../../../../data/processed_datasets/Th1(IFN-γ)_Th2(IL-5)_polarization_ratio.tsv')
 tcellpol$specimen_id = as.character(tcellpol$specimen_id)
 head(tcellpol)
@@ -105,7 +115,7 @@ head(x)
 meta = left_join(meta, rownames_to_column(x), by=c(  "Meta.specimen_id" = "rowname"))
 
 # expression
-# note: VSD followed by batch correction - the correct method
+# note: VST followed by batch correction
 counts = dat$pbmc_gene_expression$raw_count$raw_data
 colnames(counts) = paste('x', colnames(counts), sep='')
 counts = counts[, which(colnames(counts) %in% meta$Meta.specimen_id)]
@@ -126,33 +136,20 @@ vsd$subject_id = as.factor(vsd$subject_id)
 
 bef_noHVF1 = plotPCA(vsd, "dataset") # PCA before
 bef_noHVF2 = plotPCA(vsd, "subject_id") # PCA before
+bef_noHVF1
 
 assay(vsd) <- limma::removeBatchEffect(assay(vsd), batch=as.vector(dds$dataset))
 aft_noHVF1 = plotPCA(vsd, "dataset")
 aft_noHVF2 = plotPCA(vsd, "subject_id")
+aft_noHVF1
 
-# mofa is being dominated by factor 1, this may be a result of poor normalisation, therefore let's limit the geneset even further, based on HVG
-
-#topVarGenes <- head(order(rowVars(assay(vsd)),decreasing=TRUE),5000)
-#topVarGenes <- rownames(vsd)[topVarGenes]
-
-#dds <- dds[topVarGenes,]
-#dds
-#dds = estimateSizeFactors(dds)
-#vsd <- vst(dds, blind=TRUE)
-#dim(assay(vsd))
-
-#bef_plusHVF=plotPCA(vsd, "dataset") # PCA before
-
-#assay(vsd) <- limma::removeBatchEffect(assay(vsd), batch=as.vector(dds$dataset))
-
-#aft_plusHVF=plotPCA(vsd, "dataset")
 
 x = as.data.frame(t(assay(vsd)))
 colnames(x) = paste("Expr.", colnames(x), sep='')
 x[1:5, 1:5]
 meta = left_join(meta, rownames_to_column(x), by=c(  "Meta.specimen_id" = "rowname"))
 
+# separate DF into list again
 dat = list(meta = as.data.frame(meta[,grep('Meta', colnames(meta))]),
                   geneExp = as.data.frame(t(meta[,grep('Expr.', colnames(meta))])) ,
                   ab = as.data.frame(t(meta[,grep('^IgG', colnames(meta))])) ,
@@ -176,7 +173,7 @@ dat$ab[1:5, 1:13]
 lapply(dat, dim)
 
 # split into test and train
-# 30-70
+# 35-65%
 
 idx = dat$meta %>%
   filter(Meta.dataset %in% c('2022_dataset', '2021_dataset', '2020_dataset')) %>%
@@ -200,7 +197,7 @@ test.meta = dat$meta %>%
 dim(train.meta)
 dim(test.meta)
 
-
+# keep challenge data separate
 challenge.idx = dat$meta[dat$meta$Meta.dataset %in% c('2023_dataset'), 'Meta.specimen_id']
 length(challenge.idx)
 
@@ -250,7 +247,7 @@ lapply(challenge_data, dim)
 
 
 
-save(train_data, file='../data/split1/2020+21_TRAIN.RData')
-save(test_data, file='../data/split1/2022_TEST.RData')
-save(challenge_data, file='../data/split1/2023_CHALLENGE.RData')
+save(train_data, file='../data/split1/TRAIN.RData')
+save(test_data, file='../data/split1/TEST.RData')
+save(challenge_data, file='../data/split1/CHALLENGE.RData')
 

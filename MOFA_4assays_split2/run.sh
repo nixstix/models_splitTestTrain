@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /mnt/BioAdHoc/Groups/Peters/nthrupp/CMI-PB3/FINAL-test/submissions/sampleTestTrain/MOFA_4assays_split2
+cd /mnt/bioadhoc/Groups/Peters/nthrupp/CMI-PB3/FINAL-test/submissions/models_splitTestTrain/MOFA_4assays_split2
 pwd
 
 set -e
@@ -24,7 +24,7 @@ cd ../
 echo 'MOFA'
 cd MOFA
 
-Rscript -e "rmarkdown::render('first_pass_noScale_train.Rmd')"
+Rscript -e "rmarkdown::render('MOFA_train.Rmd')"
 
 Rscript prep_testData.R &>  prep_testData.out
 Rscript prep_trainData.R &>  prep_trainData.out

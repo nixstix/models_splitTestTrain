@@ -3,7 +3,7 @@ source('../scripts/run_glmnet.R')
 detach("package:MOFA2", unload=TRUE) # need to detach MOFA in order to use the predict function from glmnet
 
 load('../data/MOFA_models/predictors.RData')
-load('../data/MOFA_models/test.RData')
+load('../data/MOFA_models/test_transform.RData')
 
 # test predictions on 2022 data
 # -----------------------------

@@ -3,7 +3,7 @@
 source('../scripts/libs.R')
 source('../scripts/generic_prediction_functions.R')
 
-MOFAobject = load_model('../data/MOFA_models/MOFA2_noScale_train2020_21.hdf5')
+MOFAobject = load_model('../data/MOFA_models/MOFA.hdf5')
 MOFAobject
 
 # get predictors
@@ -25,7 +25,7 @@ predictors.baseline[1:5, 1:5]
 # extract tasks
 # -------------
 
-load('../data/split1/2020+21_TRAIN.RData')
+load('../data/split1/TRAIN.RData')
 
 
 # Freq Mn at Day 1

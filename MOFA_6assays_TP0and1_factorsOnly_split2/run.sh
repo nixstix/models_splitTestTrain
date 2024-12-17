@@ -26,7 +26,7 @@ cd ../
 echo 'MOFA'
 cd MOFA
 
-Rscript -e "rmarkdown::render('first_pass_noScale_train.Rmd')"
+Rscript -e "rmarkdown::render('MOFA_train.Rmd')"
 
 Rscript prep_testData.R &>  prep_testData.out
 Rscript prep_trainData.R &>  prep_trainData.out
@@ -43,7 +43,7 @@ cd ../
 echo 'Predictions'
 cd predict_2023
 
-Rscript prep_challengeData.R &> Rscript prep_challengeData.out
+Rscript prep_challengeData.R &> prep_challengeData.out
 Rscript CCL3_imputeMedian.R &> CCL3_imputeMedian.out
 
 cd ../
